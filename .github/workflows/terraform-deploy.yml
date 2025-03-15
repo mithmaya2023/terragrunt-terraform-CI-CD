@@ -19,6 +19,13 @@ jobs:
           curl -L https://github.com/gruntwork-io/terragrunt/releases/latest/download/terragrunt_linux_amd64 -o /usr/local/bin/terragrunt
           chmod +x /usr/local/bin/terragrunt
 
+      - name: Debug Terraform Installation
+        run: |
+          echo "Terraform Version:"
+          terraform -version
+          echo "Terraform Location:"
+          which terraform
+        
       - name: Set Terraform Path
         run: |
           echo "TG_TF_PATH=/usr/local/bin/terraform" >> $GITHUB_ENV
@@ -31,11 +38,6 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-west-2
-
-      - name: Debug Terraform Version
-        run: |
-          terraform -version
-          which terraform
 
       - name: Initialize Terraform
         run: |
