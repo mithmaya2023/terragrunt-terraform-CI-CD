@@ -23,11 +23,11 @@ jobs:
 
       - name: Initialize Terraform
         run: |
-          cd environments/dev
+          cd terraform/environments/dev
           terragrunt init
 
       - name: Apply Terraform
         run: |
-          cd environments/dev
+          cd terraform/environments/dev
           terragrunt apply -auto-approve
 
