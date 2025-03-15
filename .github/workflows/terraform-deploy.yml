@@ -20,6 +20,7 @@ jobs:
           chmod +x /usr/local/bin/terragrunt
           echo "TERRAGRUNT_TFPATH=$(which terraform)" >> $GITHUB_ENV
 
+
       - name: Setup AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -29,14 +30,14 @@ jobs:
 
       - name: Initialize Terraform
         run: |
-          cd environments/dev
+          cd terraform/environments/dev
           terragrunt init
         env:
           TERRAGRUNT_TFPATH: ${{ env.TERRAGRUNT_TFPATH }}
 
       - name: Apply Terraform
         run: |
-          cd environments/dev
+          cd terraform/environments/dev
           terragrunt apply -auto-approve
         env:
           TERRAGRUNT_TFPATH: ${{ env.TERRAGRUNT_TFPATH }}
