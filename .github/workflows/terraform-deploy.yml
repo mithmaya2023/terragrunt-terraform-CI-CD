@@ -14,6 +14,12 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
 
+      - name: Install Terragrunt
+        run: |
+          curl -L https://github.com/gruntwork-io/terragrunt/releases/latest/download/terragrunt_linux_amd64 -o /usr/local/bin/terragrunt
+          chmod +x /usr/local/bin/terragrunt
+          echo "TERRAGRUNT_TFPATH=$(which terraform)" >> $GITHUB_ENV
+
       - name: Setup AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
@@ -25,9 +31,13 @@ jobs:
         run: |
           cd environments/dev
           terragrunt init
+        env:
+          TERRAGRUNT_TFPATH: ${{ env.TERRAGRUNT_TFPATH }}
 
       - name: Apply Terraform
         run: |
           cd environments/dev
           terragrunt apply -auto-approve
+        env:
+          TERRAGRUNT_TFPATH: ${{ env.TERRAGRUNT_TFPATH }}
 
