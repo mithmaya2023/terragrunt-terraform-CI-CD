@@ -13,22 +13,28 @@ jobs:
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_wrapper: false  # Prevents GitHub's auto-wrapped Terraform binary issues
 
       - name: Install Terragrunt
         run: |
           curl -L https://github.com/gruntwork-io/terragrunt/releases/latest/download/terragrunt_linux_amd64 -o /usr/local/bin/terragrunt
           chmod +x /usr/local/bin/terragrunt
 
-      - name: Debug Terraform Installation
+      - name: Verify Terraform & Terragrunt Installation
         run: |
           echo "Terraform Version:"
           terraform -version
           echo "Terraform Location:"
           which terraform
-        
-      - name: Set Terraform Path
+          echo "Terragrunt Version:"
+          terragrunt --version
+          echo "Terragrunt Location:"
+          which terragrunt
+
+      - name: Ensure Terraform & Terragrunt Paths
         run: |
-          echo "TG_TF_PATH=/usr/local/bin/terraform" >> $GITHUB_ENV
+          echo "TG_TF_PATH=$(which terraform)" >> $GITHUB_ENV
           echo "PATH=$PATH:/usr/local/bin" >> $GITHUB_ENV
         shell: bash
 
@@ -39,13 +45,14 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-west-2
 
-      - name: Initialize Terraform
+      - name: Initialize Terragrunt
         run: |
           cd terraform/environments/dev
           terragrunt init
         env:
           TG_TF_PATH: ${{ env.TG_TF_PATH }}
-      - name: Apply Terraform
+
+      - name: Apply Terraform Configuration
         run: |
           cd terraform/environments/dev
           terragrunt apply -auto-approve
