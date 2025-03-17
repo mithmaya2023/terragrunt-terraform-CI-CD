@@ -4,4 +4,4 @@ resource "aws_instance" "app_server" {
   tags = {
     Name = "Terragrunt-EC2"
   }
-}i
+}
